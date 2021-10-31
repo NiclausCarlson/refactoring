@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Database {
 
+
     public static class QueryBuilder {
         List<String> query = new ArrayList<>();
         Database db;
@@ -30,8 +31,12 @@ public class Database {
             return String.join(" ", query);
         }
 
-        public ResultSet execute() throws SQLException {
-            return db.execute();
+        public ResultSet executeQuery() throws SQLException {
+            return db.executeQuery();
+        }
+
+        public int executeUpdate() throws SQLException {
+            return db.executeUpdate();
         }
     }
 
@@ -47,7 +52,11 @@ public class Database {
         return builder;
     }
 
-    public ResultSet execute() throws SQLException {
+    public ResultSet executeQuery() throws SQLException {
         return stmt.executeQuery(builder.build());
+    }
+
+    public int executeUpdate() throws SQLException {
+        return stmt.executeUpdate(builder.build());
     }
 }

@@ -1,5 +1,8 @@
 package main.java.ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.database.Database;
+import ru.akirakozov.sd.refactoring.database.SQLCommand;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,12 +22,17 @@ public class GetProductsServlet extends HttpServlet {
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT");
-                response.getWriter().println("<html><body>");
+                Database db = new Database(stmt);
+                ResultSet rs = db.queryBuilder().addSQLCommand(SQLCommand.SELECT)
+                        .addCommandArgument("*")
+                        .addSQLCommand(SQLCommand.FROM)
+                        .addCommandArgument("PRODUCT")
+                        .executeQuery();
 
+                response.getWriter().println("<html><body>");
                 while (rs.next()) {
-                    String  name = rs.getString("name");
-                    int price  = rs.getInt("price");
+                    String name = rs.getString("name");
+                    int price = rs.getInt("price");
                     response.getWriter().println(name + "\t" + price + "</br>");
                 }
                 response.getWriter().println("</body></html>");

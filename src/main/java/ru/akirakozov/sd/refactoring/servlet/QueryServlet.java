@@ -88,7 +88,7 @@ public class QueryServlet extends HttpServlet {
         if (SUPPORTED_COMMANDS.contains(command)) {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
-                ResultSet rs = generateDatabaseQuery(command, stmt).execute();
+                ResultSet rs = generateDatabaseQuery(command, stmt).executeQuery();
                 writeResponse(command, rs, response);
                 rs.close();
                 stmt.close();
