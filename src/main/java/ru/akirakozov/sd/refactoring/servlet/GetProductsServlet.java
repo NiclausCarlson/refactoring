@@ -1,8 +1,10 @@
 package main.java.ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.ResponseFiller.ResponseFiller;
 import ru.akirakozov.sd.refactoring.database.Database;
 import ru.akirakozov.sd.refactoring.database.SQLCommand;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ public class GetProductsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ResponseFiller filler = new ResponseFiller(response);
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
@@ -29,14 +32,13 @@ public class GetProductsServlet extends HttpServlet {
                         .text("PRODUCT")
                         .executeQuery();
 
-                response.getWriter().println("<html><body>");
+                filler.openHeadBody();
                 while (rs.next()) {
                     String name = rs.getString("name");
                     int price = rs.getInt("price");
-                    response.getWriter().println(name + "\t" + price + "</br>");
+                    filler.setCloseBr(name + "\t" + price);
                 }
-                response.getWriter().println("</body></html>");
-
+                filler.closeHeadBody();
                 rs.close();
                 stmt.close();
             }
@@ -44,8 +46,6 @@ public class GetProductsServlet extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        filler.setContentType().setOkStatus();
     }
 }

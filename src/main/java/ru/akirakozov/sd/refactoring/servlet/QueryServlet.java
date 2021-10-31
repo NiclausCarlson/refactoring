@@ -1,5 +1,6 @@
 package main.java.ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.ResponseFiller.ResponseFiller;
 import ru.akirakozov.sd.refactoring.database.Database;
 import ru.akirakozov.sd.refactoring.database.SQLCommand;
 
@@ -58,46 +59,45 @@ public class QueryServlet extends HttpServlet {
         return db;
     }
 
-    private void writeResponse(final String command, final ResultSet rs, HttpServletResponse response) throws IOException, SQLException {
-        response.getWriter().println("<html><body>");
+    private void writeResponse(final String command, final ResultSet rs, ResponseFiller filler) throws IOException, SQLException {
+        filler.openHeadBody();
         if (command.equals("max") || command.equals("min")) {
-            response.getWriter().println("<h1>Product with " + command + " price: </h1>");
+            filler.setH1("Product with " + command + " price: ");
             while (rs.next()) {
                 String name = rs.getString("name");
                 int price = rs.getInt("price");
-                response.getWriter().println(name + "\t" + price + "</br>");
+                filler.setCloseBr(name + "\t" + price);
             }
         } else if (command.equals("count") || command.equals("sum")) {
             if (command.equals("count")) {
-                response.getWriter().println("Number of products: ");
+                filler.setText("Number of products: ");
             } else {
-                response.getWriter().println("Summary price: ");
+                filler.setText("Summary price: ");
             }
             if (rs.next()) {
-                response.getWriter().println(rs.getInt(1));
+                filler.setText(Integer.toString(rs.getInt(1)));
             }
         }
-        response.getWriter().println("</body></html>");
+        filler.closeHeadBody();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ResponseFiller filler = new ResponseFiller(response);
         String command = request.getParameter("command");
         if (SUPPORTED_COMMANDS.contains(command)) {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 ResultSet rs = generateDatabaseQuery(command, stmt).executeQuery();
-                writeResponse(command, rs, response);
+                writeResponse(command, rs, filler);
                 rs.close();
                 stmt.close();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
-            response.getWriter().println("Unknown command: " + command);
+            filler.setText("Unknown command: " + command);
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        filler.setContentType().setOkStatus();
     }
 }

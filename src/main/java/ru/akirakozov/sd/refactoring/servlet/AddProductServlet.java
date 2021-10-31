@@ -1,5 +1,6 @@
 package main.java.ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.ResponseFiller.ResponseFiller;
 import ru.akirakozov.sd.refactoring.database.Database;
 import ru.akirakozov.sd.refactoring.database.SQLCommand;
 
@@ -20,7 +21,6 @@ public class AddProductServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("name");
         long price = Long.parseLong(request.getParameter("price"));
-
         try {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
@@ -36,9 +36,7 @@ public class AddProductServlet extends HttpServlet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("OK");
+        ResponseFiller filler = new ResponseFiller(response);
+        filler.setContentType().setOkStatus().setText("OK");
     }
 }
