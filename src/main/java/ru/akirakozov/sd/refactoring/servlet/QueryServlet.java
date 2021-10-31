@@ -6,10 +6,8 @@ import ru.akirakozov.sd.refactoring.database.SQLCommand;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -23,38 +21,38 @@ public class QueryServlet extends HttpServlet {
         switch (command) {
             case "max":
                 db.queryBuilder()
-                        .addSQLCommand(SQLCommand.SELECT)
-                        .addCommandArgument("*")
-                        .addSQLCommand(SQLCommand.FROM)
-                        .addCommandArgument("PRODUCT")
-                        .addSQLCommand(SQLCommand.ORDER_BY)
-                        .addCommandArgument("PRICE")
-                        .addSQLCommand(SQLCommand.DESC)
-                        .addCommandArgument("LIMIT 1");
+                        .command(SQLCommand.SELECT)
+                        .text("*")
+                        .command(SQLCommand.FROM)
+                        .text("PRODUCT")
+                        .command(SQLCommand.ORDER_BY)
+                        .text("PRICE")
+                        .command(SQLCommand.DESC)
+                        .text("LIMIT 1");
                 break;
             case "min":
                 db.queryBuilder()
-                        .addSQLCommand(SQLCommand.SELECT)
-                        .addCommandArgument("*")
-                        .addSQLCommand(SQLCommand.FROM)
-                        .addCommandArgument("PRODUCT")
-                        .addSQLCommand(SQLCommand.ORDER_BY)
-                        .addCommandArgument("PRICE")
-                        .addCommandArgument("LIMIT 1");
+                        .command(SQLCommand.SELECT)
+                        .text("*")
+                        .command(SQLCommand.FROM)
+                        .text("PRODUCT")
+                        .command(SQLCommand.ORDER_BY)
+                        .text("PRICE")
+                        .text("LIMIT 1");
                 break;
             case "sum":
                 db.queryBuilder()
-                        .addSQLCommand(SQLCommand.SELECT)
-                        .addCommandArgument("SUM(price)")
-                        .addSQLCommand(SQLCommand.FROM)
-                        .addCommandArgument("PRODUCT");
+                        .command(SQLCommand.SELECT)
+                        .text("SUM(price)")
+                        .command(SQLCommand.FROM)
+                        .text("PRODUCT");
                 break;
             case "count":
                 db.queryBuilder()
-                        .addSQLCommand(SQLCommand.SELECT)
-                        .addCommandArgument("COUNT(*)")
-                        .addSQLCommand(SQLCommand.FROM)
-                        .addCommandArgument("PRODUCT");
+                        .command(SQLCommand.SELECT)
+                        .text("COUNT(*)")
+                        .command(SQLCommand.FROM)
+                        .text("PRODUCT");
                 break;
         }
         return db;

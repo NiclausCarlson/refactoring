@@ -17,13 +17,27 @@ public class Database {
             this.db = db;
         }
 
-        public QueryBuilder addSQLCommand(SQLCommand command) {
+        public QueryBuilder command(SQLCommand command) {
             query.add(command.command);
             return this;
         }
 
-        public QueryBuilder addCommandArgument(String arg) {
+        public QueryBuilder text(String arg) {
             query.add(arg);
+            return this;
+        }
+
+        public QueryBuilder openBracket() {
+            query.add("(");
+            return this;
+        }
+
+        public QueryBuilder closeBracket() {
+            query.add(")");
+            return this;
+        }
+        public QueryBuilder comma() {
+            query.add(",");
             return this;
         }
 

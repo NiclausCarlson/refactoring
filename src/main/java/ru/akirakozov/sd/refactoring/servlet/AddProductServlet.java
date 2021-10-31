@@ -25,11 +25,11 @@ public class AddProductServlet extends HttpServlet {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 Database db = new Database(stmt);
-                db.queryBuilder().addSQLCommand(SQLCommand.INSERT)
-                        .addCommandArgument("PRODUCT")
-                        .addCommandArgument("(NAME, PRICE)")
-                        .addSQLCommand(SQLCommand.VALUES)
-                        .addCommandArgument("(\"" + name + "\"," + price + ")")
+                db.queryBuilder().command(SQLCommand.INSERT)
+                        .text("PRODUCT")
+                        .text("(NAME, PRICE)")
+                        .command(SQLCommand.VALUES)
+                        .text("(\"" + name + "\"," + price + ")")
                         .executeUpdate();
                 stmt.close();
             }

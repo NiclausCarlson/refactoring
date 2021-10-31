@@ -23,10 +23,10 @@ public class GetProductsServlet extends HttpServlet {
             try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
                 Statement stmt = c.createStatement();
                 Database db = new Database(stmt);
-                ResultSet rs = db.queryBuilder().addSQLCommand(SQLCommand.SELECT)
-                        .addCommandArgument("*")
-                        .addSQLCommand(SQLCommand.FROM)
-                        .addCommandArgument("PRODUCT")
+                ResultSet rs = db.queryBuilder().command(SQLCommand.SELECT)
+                        .text("*")
+                        .command(SQLCommand.FROM)
+                        .text("PRODUCT")
                         .executeQuery();
 
                 response.getWriter().println("<html><body>");
